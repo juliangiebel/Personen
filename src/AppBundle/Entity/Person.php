@@ -9,12 +9,15 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+
+//TODO: Add validation to setters
 
 /**
  * @ORM\Entity
  * @ORM\Table(name="person")
  */
-class Person
+class Person implements AdvancedUserInterface, \Serializable
 {
     /**
      * @ORM\Column(type="integer")
@@ -59,7 +62,7 @@ class Person
     private $street;
 
     /**
-     *@ORM\Column(type="string", length=100)
+     *@ORM\Column(type="string", length=100, unique=true)
      */
     private $email;
 
@@ -69,141 +72,207 @@ class Person
     private $pwdhash;
 
     /**
-     * @ORM\Column(type="string", length=1024)
+     * @ORM\Column(type="boolean")
      */
-    private $salt;
+    private $active;
 
     /**
-     * @return mixed
+     * @ORM\column(type="simple_array")
      */
+    private $roles;
+
+
     public function getTitle()
     {
         return $this->title;
     }
 
-    /**
-     * @param mixed $title
-     */
+
     public function setTitle($title)
     {
         $this->title = $title;
     }
 
-    /**
-     * @return mixed
-     */
+
     public function getName()
     {
         return $this->name;
     }
 
-    /**
-     * @param mixed $name
-     */
+
     public function setName($name)
     {
         $this->name = $name;
     }
 
-    /**
-     * @return mixed
-     */
+
     public function getSurename()
     {
         return $this->surename;
     }
 
-    /**
-     * @param mixed $surename
-     */
+
     public function setSurename($surename)
     {
         $this->surename = $surename;
     }
 
-    /**
-     * @return mixed
-     */
+
     public function getBirthday()
     {
         return $this->birthday;
     }
 
-    /**
-     * @param mixed $birthday
-     */
+
     public function setBirthday($birthday)
     {
         $this->birthday = $birthday;
     }
 
-    /**
-     * @return mixed
-     */
+
     public function getPlz()
     {
         return $this->plz;
     }
 
-    /**
-     * @param mixed $plz
-     */
     public function setPlz($plz)
     {
         $this->plz = $plz;
     }
 
-    /**
-     * @return mixed
-     */
     public function getCity()
     {
         return $this->city;
     }
 
-    /**
-     * @param mixed $city
-     */
     public function setCity($city)
     {
         $this->city = $city;
     }
 
-    /**
-     * @return mixed
-     */
     public function getStreet()
     {
         return $this->street;
     }
 
-    /**
-     * @param mixed $street
-     */
     public function setStreet($street)
     {
         $this->street = $street;
     }
 
-    /**
-     * @return mixed
-     */
     public function getEmail()
     {
         return $this->email;
     }
 
-    /**
-     * @param mixed $email
-     */
     public function setEmail($email)
     {
         $this->email = $email;
     }
 
 
-    
+    public function serialize()
+    {
+        return $this->serialize(array(
+            $this->id,
+            $this->email,
+            $this->active
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+        list(
+            $this->id,
+            $this->email,
+            $this->active
+            ) = unserialize($serialized, ['allowed_classes'=> false]);
+    }
+
+    public function getRoles()
+    {
+        return $this->roles;
+    }
 
 
+    public function getPassword()
+    {
+        return $this->pwdhash;
+    }
 
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+
+    public function eraseCredentials()
+    {
+    }
+
+    /**
+     * Checks whether the user's account has expired.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw an AccountExpiredException and prevent login.
+     *
+     * @return bool true if the user's account is non expired, false otherwise
+     *
+     * @see AccountExpiredException
+     */
+    public function isAccountNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * Checks whether the user is locked.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a LockedException and prevent login.
+     *
+     * @return bool true if the user is not locked, false otherwise
+     *
+     * @see LockedException
+     */
+    public function isAccountNonLocked()
+    {
+        return true;
+    }
+
+    /**
+     * Checks whether the user's credentials (password) has expired.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a CredentialsExpiredException and prevent login.
+     *
+     * @return bool true if the user's credentials are non expired, false otherwise
+     *
+     * @see CredentialsExpiredException
+     */
+    public function isCredentialsNonExpired()
+    {
+        return true;
+    }
+
+    /**
+     * Checks whether the user is enabled.
+     *
+     * Internally, if this method returns false, the authentication system
+     * will throw a DisabledException and prevent login.
+     *
+     * @return bool true if the user is enabled, false otherwise
+     *
+     * @see DisabledException
+     */
+    public function isEnabled()
+    {
+        return $this->active;
+    }
 }
