@@ -3,15 +3,27 @@
 security:
 
     encoders:
-      AppBundle\Entity\Person:
-        algorithm: bcryot
+      Symfony\Component\Security\Core\User\User:
+        algorithm: bcrypt
+      AppBundle\Entity\AppUser:
+        algorithm: bcrypt
 
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
-        db_provider:
-          entity:
-            class: AppBundle:Person
-            property: email
+      chain_provider:
+        chain:
+          providers: [in_memory, db_provider]
+      in_memory:
+        memory:
+          users:
+            dev:
+              password: $2y$13$9qheiNDGJWLfk1O5bmHXCumQEDKwpVselCAPvCvulcp62Ly8ch4mW
+              roles: 'ROLE_ADMIN'
+
+      db_provider:
+        entity:
+          class: AppBundle:AppUser
+          property: email
 
 
     firewalls:
@@ -42,4 +54,5 @@ security:
             # https://symfony.com/doc/current/security/form_login_setup.html
             #form_login: ~
 
-    acc
+    access_control:
+      - { path: ^/admin, roles: ROLE_ADMIN}

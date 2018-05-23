@@ -10,6 +10,10 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\AdvancedUserInterface;
+use Symfony\Component\Security\Core\User\EquatableInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 //TODO: Add validation to setters
 
@@ -17,7 +21,7 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
  * @ORM\Entity
  * @ORM\Table(name="person")
  */
-class Person implements AdvancedUserInterface, \Serializable
+class AppUser implements AdvancedUserInterface, EquatableInterface, \Serializable
 {
     /**
      * @ORM\Column(type="integer")
@@ -39,7 +43,7 @@ class Person implements AdvancedUserInterface, \Serializable
     /**
      * @ORM\Column(type="string", length=100)
      */
-    private $surename;
+    private $surname;
 
     /**
      * @ORM\Column(type="date")
@@ -49,7 +53,7 @@ class Person implements AdvancedUserInterface, \Serializable
     /**
      * @ORM\Column(type="integer")
      */
-    private $plz;
+    private $postCode;
 
     /**
      * @ORM\Column(type="string", length=40)
@@ -72,7 +76,7 @@ class Person implements AdvancedUserInterface, \Serializable
     private $pwdhash;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="smallint")
      */
     private $active;
 
@@ -80,6 +84,12 @@ class Person implements AdvancedUserInterface, \Serializable
      * @ORM\column(type="simple_array")
      */
     private $roles;
+
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Length(max=4096)
+     */
+    private $plainPassword;
 
 
     public function getTitle()
@@ -106,15 +116,15 @@ class Person implements AdvancedUserInterface, \Serializable
     }
 
 
-    public function getSurename()
+    public function getSurname()
     {
-        return $this->surename;
+        return $this->surname;
     }
 
 
-    public function setSurename($surename)
+    public function setSurname($surname)
     {
-        $this->surename = $surename;
+        $this->surname = $surname;
     }
 
 
@@ -130,14 +140,14 @@ class Person implements AdvancedUserInterface, \Serializable
     }
 
 
-    public function getPlz()
+    public function getPostCode()
     {
-        return $this->plz;
+        return $this->postCode;
     }
 
-    public function setPlz($plz)
+    public function setPostCode($postCode)
     {
-        $this->plz = $plz;
+        $this->postCode = $postCode;
     }
 
     public function getCity()
@@ -171,9 +181,34 @@ class Person implements AdvancedUserInterface, \Serializable
     }
 
 
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+    }
+
+
+
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+
+    public function setPwdhash($pwdhash)
+    {
+        $this->pwdhash = $pwdhash;
+    }
+
+    public function setActive($active)
+    {
+        $this->active = $active? 1:0;
+    }
+
+
+
     public function serialize()
     {
-        return $this->serialize(array(
+        return serialize(array(
             $this->id,
             $this->email,
             $this->active
@@ -194,6 +229,10 @@ class Person implements AdvancedUserInterface, \Serializable
         return $this->roles;
     }
 
+    public function setRoles($roles)
+    {
+        $this->roles = $roles;
+    }
 
     public function getPassword()
     {
@@ -274,5 +313,22 @@ class Person implements AdvancedUserInterface, \Serializable
     public function isEnabled()
     {
         return $this->active;
+    }
+
+    /**
+     * The equality comparison should neither be done by referential equality
+     * nor by comparing identities (i.e. getId() === getId()).
+     *
+     * However, you do not need to compare every attribute, but only those that
+     * are relevant for assessing whether re-authentication is required.
+     *
+     * Also implementation should consider that $user instance may implement
+     * the extended user interface `AdvancedUserInterface`.
+     *
+     * @return bool
+     */
+    public function isEqualTo(UserInterface $user)
+    {
+        return $this->getUsername() === $user->getUsername();
     }
 }
