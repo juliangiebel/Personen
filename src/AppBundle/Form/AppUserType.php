@@ -28,9 +28,9 @@ class AppUserType extends AbstractType
             ->add('name', TextType::class)
             ->add('surname', TextType::class)
             ->add('birthday', DateType::class)
-            ->add('postCode', IntegerType::class,array(
+            ->add('postCode', TextType::class,array(
                 'required' => false,
-                'empty_data' => 0
+                'empty_data' => ''
             ))
             ->add('city', TextType::class,array(
                 'required' => false,

@@ -1,16 +1,21 @@
 {#TODO: Add login template#}
-{#TODO: Write nad extend base twig#}
 
-{% if error %}
-    <div class="notification">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-{% endif %}
+{% extends 'base.html.twig' %}
 
-<form action="{{ path('login') }}" method="post">
-    <label for="email">Email:</label>
-    <input type="text" id="email"   name="_username"   value="{{ last_email }}">
+{% block body %}
 
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="_password">
+    {% if error %}
+        <div class="notification">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
 
-    <button type="submit">Login</button>
-</form>
+    <form action="{{ path('login') }}" method="post">
+        <label for="email">Email:</label>
+        <input type="text" id="email"   name="_username"   value="{{ last_email }}">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="_password">
+
+        <button type="submit">Login</button>
+    </form>
+
+{% endblock %}

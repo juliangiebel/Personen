@@ -1,18 +1,23 @@
 {# TODO: Implement registration form #}
-{# TODO: Extend from base template#}
 
-{{ form_start(form) }}
-    {{ form_row(form.title) }}
-    {{ form_row(form.name) }}
-    {{ form_row(form.surname) }}
-    {{ form_row(form.birthday) }}
-    {{ form_row(form.postCode) }}
-    {{ form_row(form.street) }}
-    {{ form_row(form.city) }}
+{% extends 'base.html.twig' %}
 
-    {{ form_row(form.email) }}
-    {{ form_row(form.plainPassword.first) }}
-    {{ form_row(form.plainPassword.second) }}
+{% block body %}
 
-    <button type="submit">Register</button>
-{{ form_end(form) }}
+    {{ form_start(form) }}
+        {{ form_row(form.title) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.surname) }}
+        {{ form_row(form.birthday) }}
+        {{ form_row(form.postCode) }}
+        {{ form_row(form.street) }}
+        {{ form_row(form.city) }}
+
+        {{ form_row(form.email) }}
+        {{ form_row(form.plainPassword.first) }}
+        {{ form_row(form.plainPassword.second) }}
+
+        <button type="submit">Register</button>
+    {{ form_end(form) }}
+
+{% endblock %}

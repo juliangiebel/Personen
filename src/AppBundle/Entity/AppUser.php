@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 //TODO: Add validation to setters
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="person")
  */
 class AppUser implements AdvancedUserInterface, EquatableInterface, \Serializable
@@ -51,7 +51,7 @@ class AppUser implements AdvancedUserInterface, EquatableInterface, \Serializabl
     private $birthday;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string", length=40)
      */
     private $postCode;
 
