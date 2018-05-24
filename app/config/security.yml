@@ -12,13 +12,7 @@ security:
     providers:
       chain_provider:
         chain:
-          providers: [in_memory, db_provider]
-      in_memory:
-        memory:
-          users:
-            dev:
-              password: $2y$13$9qheiNDGJWLfk1O5bmHXCumQEDKwpVselCAPvCvulcp62Ly8ch4mW
-              roles: 'ROLE_ADMIN'
+          providers: [db_provider]
 
       db_provider:
         entity:
