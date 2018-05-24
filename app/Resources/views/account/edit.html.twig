@@ -5,3 +5,20 @@
         <a href="{{ path('show',{'slug': app.user.username})}}">Back</a>
     </nav>
 {% endblock %}
+
+{% block body %}
+
+    {{ form_start(form) }}
+    {{ form_row(form.title) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.surname) }}
+    {{ form_row(form.birthday) }}
+    {{ form_row(form.postCode) }}
+    {{ form_row(form.street) }}
+    {{ form_row(form.city) }}
+
+    <button type="submit">Done</button>
+    {{ form_end(form) }}
+
+
+{% endblock %}

@@ -20,11 +20,12 @@ use Symfony\Component\HttpFoundation\Response;
 class AccountController extends Controller
 {
 
-    /**
+    /**@TODO: Document
      * @Route("/register", name="user_registration")
      */
     public function registerAction(Request $request){
 
+        //TODO: Check if account email is already in use
         $user = new AppUser();
         $form = $this->createForm(AppUserType::class, $user);
 
@@ -60,31 +61,57 @@ class AccountController extends Controller
 
     }
 
-    /**
+    /**@TODO: Document
      * @Route("/edit/{slug}", name="edit")
      */
     public function editAction($slug, Request $request){
 
-        //TODO: Implement edit
-        if($this->getUser()->getEmail() === $slug){
+        $userEmail = $this->getUser()->getEmail();
 
-            $form = $this->createForm(AppUserType::class)->remove('plainPassword');
+        if($userEmail === $slug){
+
+            $entityManager = $this->getDoctrine()->getManager();
+            //0:{Id|Title|Name|Surname|email|PostCode|City|Street}
+            $userArray = $entityManager->getRepository(AppUser::class)
+                ->getByEmail($userEmail);
+
+            //Creates user object from array
+            $user = new AppUser();
+
+            $user->fromArray($userArray[0]);
+
+            $form = $this->createForm(AppUserType::class, $user, array( 'method' => 'PUT' ))
+                ->remove('email');
+
+            $form->handleRequest($request);
+
+            if($form->isSubmitted() && $form->isValid()){
 
 
+                $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->merge($user);
+                $entityManager->flush();
+
+                //TODO: Add success notification after redirecting.
+                return $this->redirectToRoute('show',array('slug'=> $slug));
+
+
+            }
 
             return $this->render('account/edit.html.twig', array(
-
+                'form' => $form->createView()
             ));
         }
 
         return $this->redirectToRoute('show',array('slug'=> $slug));
     }
 
-    /**
+    /**@TODO: Document
      * @Route("/delete/{slug}", name="delete")
      */
     public function deleteAction($slug){
 
+        //TODO: Implement deleting entries (low priority)
         //TODO: Implement confirmation prompt
 
         return $this->redirectToRoute("homepage");

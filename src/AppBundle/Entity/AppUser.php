@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
-//TODO: Add validation to setters
+//@TODO: Add validation to setters
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
@@ -86,7 +86,6 @@ class AppUser implements AdvancedUserInterface, EquatableInterface, \Serializabl
     private $roles;
 
     /**
-     * @Assert\NotBlank()
      * @Assert\Length(max=4096)
      */
     private $plainPassword;
@@ -330,5 +329,29 @@ class AppUser implements AdvancedUserInterface, EquatableInterface, \Serializabl
     public function isEqualTo(UserInterface $user)
     {
         return $this->getUsername() === $user->getUsername();
+    }
+
+
+    /** Fills the user object with data using an array for setting a forms default values.
+     *
+     * array(
+     *      title,
+     *      name,
+     *      surname,
+     *      birthday,
+     *      email,
+     *      postCode,
+     *      city,
+     *      street,
+     *  )
+     *
+     * @param $array
+     */
+    public function fromArray($array){
+
+       foreach ($array as $key => $value){
+           $this->$key = $value;
+       }
+
     }
 }

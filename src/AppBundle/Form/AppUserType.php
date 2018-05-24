@@ -14,6 +14,8 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -40,12 +42,20 @@ class AppUserType extends AbstractType
                 'required' => false,
                 'empty_data' => ''
             ))
-            ->add('email',EmailType::class)
-            ->add('plainPassword', RepeatedType::class, array(
-               'type' => PasswordType::class,
-               'first_options'  => array('label' => 'Password'),
-               'second_options' => array('label' => 'Repeat Password'),
-            ));
+            ->add('email',EmailType::class)->addEventListener(FormEvents::PRE_SET_DATA,function (FormEvent $event){
+                $data = $event->getData();
+                $form  = $event->getForm();
+
+
+                if(!$data || null === $data->getEmail()){
+                    $form->add('plainPassword', RepeatedType::class, array(
+                        'type' => PasswordType::class,
+                        'first_options'  => array('label' => 'Password'),
+                        'second_options' => array('label' => 'Repeat Password'),
+                    ));
+                }
+            });
+
     }
 
     public function configureOptions(OptionsResolver $resolver)
