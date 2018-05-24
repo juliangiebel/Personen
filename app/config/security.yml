@@ -40,7 +40,7 @@ security:
 
             anonymous: ~
 
-            provider: db_provider
+            provider: chain_provider
 
             form_login:
               login_path: login
@@ -59,3 +59,4 @@ security:
 
     access_control:
       - { path: ^/admin, roles: ROLE_ADMIN}
+      - { path: ^/edit/*, roles: IS_AUTHENTICATED_FULLY}

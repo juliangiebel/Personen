@@ -22,7 +22,7 @@ class DefaultController extends Controller
             ->getAllOrderedBy('name');
 
 
-        return $this->render('default/index.html.twig', $userList);
+        return $this->render('default/index.html.twig', array('users'=>$userList));
     }
 
     /**
@@ -32,32 +32,10 @@ class DefaultController extends Controller
 
         $entityManager = $this->getDoctrine()->getManager();
         $user = $entityManager->getRepository(AppUser::class)
-            ->getById($slug);
+            ->getByEmail($slug);
 
-        return $this->render('', $user);
+        return $this->render('default/show.html.twig', $user);
+
     }
-
-    /**
-     * @Route("/edit/{slug}", name="edit")
-     */
-    public function editAction($slug, Request $request){
-
-        //TODO: Implement edit
-        if(false){
-            //return
-        }
-
-        return $this->redirectToRoute($this->generateUrl('show',$slug));
-    }
-
-    /**
-     * @Route("/edit/{slug}", name="delete")
-     */
-    public function deleteAction($slug){
-
-        return $this->redirectToRoute("homepage");
-    }
-
-
 
 }

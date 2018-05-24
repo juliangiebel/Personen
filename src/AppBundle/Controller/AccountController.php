@@ -8,14 +8,16 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\AppBundle;
 use AppBundle\Form\AppUserType;
 use AppBundle\Entity\AppUser;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 
-class RegistrationController extends Controller
+class AccountController extends Controller
 {
 
     /**
@@ -51,9 +53,41 @@ class RegistrationController extends Controller
         }
 
         return $this->render(
-            'registration/register.html.twig',
+            'account/register.html.twig',
             array('form' => $form->createView())
         );
+
+
+    }
+
+    /**
+     * @Route("/edit/{slug}", name="edit")
+     */
+    public function editAction($slug, Request $request){
+
+        //TODO: Implement edit
+        if($this->getUser()->getEmail() === $slug){
+
+            $form = $this->createForm(AppUserType::class)->remove('plainPassword');
+
+
+
+            return $this->render('account/edit.html.twig', array(
+
+            ));
+        }
+
+        return $this->redirectToRoute('show',array('slug'=> $slug));
+    }
+
+    /**
+     * @Route("/delete/{slug}", name="delete")
+     */
+    public function deleteAction($slug){
+
+        //TODO: Implement confirmation prompt
+
+        return $this->redirectToRoute("homepage");
     }
 
 }

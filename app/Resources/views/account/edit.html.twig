@@ -1,0 +1,7 @@
+{% extends 'base.html.twig' %}
+
+{% block navigation %}
+    <nav>
+        <a href="{{ path('show',{'slug': app.user.username})}}">Back</a>
+    </nav>
+{% endblock %}

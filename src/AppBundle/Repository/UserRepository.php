@@ -20,7 +20,7 @@ class UserRepository extends EntityRepository
 
     public function getByEmail($email){
         $qb = $this->base();
-        $qb->where($qb->expr()->eq('email',$email));
+        $qb->where($qb->expr()->eq('u.email',"'".$email."'"));
 
         return $qb->getQuery()->getResult();
 

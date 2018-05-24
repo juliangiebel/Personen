@@ -11,9 +11,9 @@
             <nav>
                 <span class="menu-button"></span>
                 <a href="{{ path('homepage') }}">Home</a>
-                {% if logged_in|default(false) %}
-                <a href="{{ path('show', email ) }}">{{ email }}</a>
-                <a href="{{ path('logout') }}">Logout</a>
+                {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                <a href="{{ path('show', {'slug': app.user.username}) }}">{{ app.user.username }}</a>
+                <a href="{{ path('/logout') }}">Logout</a>
                 {% else %}
                 <a href="{{ path('login') }}">Login</a>
                 <a href="{{ path('user_registration') }}">Register</a>
