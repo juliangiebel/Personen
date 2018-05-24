@@ -34,7 +34,9 @@ class DefaultController extends Controller
         $user = $entityManager->getRepository(AppUser::class)
             ->getByEmail($slug);
 
-        return $this->render('default/show.html.twig', $user);
+        return $this->render('default/show.html.twig', array(
+            'user' => $user[0]
+        ));
 
     }
 

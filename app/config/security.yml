@@ -60,3 +60,4 @@ security:
     access_control:
       - { path: ^/admin, roles: ROLE_ADMIN}
       - { path: ^/edit/*, roles: IS_AUTHENTICATED_FULLY}
+      - { path: ^/delete/*, roles: IS_AUTHENTICATED_FULLY}

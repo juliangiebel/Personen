@@ -15,12 +15,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 
 class AccountController extends Controller
 {
 
-    /**@TODO: Document
+    /**
      * @Route("/register", name="user_registration")
      */
     public function registerAction(Request $request){
@@ -61,58 +62,77 @@ class AccountController extends Controller
 
     }
 
-    /**@TODO: Document
+    /**
      * @Route("/edit/{slug}", name="edit")
      */
     public function editAction($slug, Request $request){
 
         $userEmail = $this->getUser()->getEmail();
 
-        if($userEmail === $slug){
-
-            $entityManager = $this->getDoctrine()->getManager();
-            //0:{Id|Title|Name|Surname|email|PostCode|City|Street}
-            $userArray = $entityManager->getRepository(AppUser::class)
-                ->getByEmail($userEmail);
-
-            //Creates user object from array
-            $user = new AppUser();
-
-            $user->fromArray($userArray[0]);
-
-            $form = $this->createForm(AppUserType::class, $user, array( 'method' => 'PUT' ))
-                ->remove('email');
-
-            $form->handleRequest($request);
-
-            if($form->isSubmitted() && $form->isValid()){
-
-
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->merge($user);
-                $entityManager->flush();
-
-                //TODO: Add success notification after redirecting.
-                return $this->redirectToRoute('show',array('slug'=> $slug));
-
-
-            }
-
-            return $this->render('account/edit.html.twig', array(
-                'form' => $form->createView()
-            ));
+        if($userEmail !== $slug) {
+            return $this->redirectToRoute('show', array('slug' => $slug));
         }
 
-        return $this->redirectToRoute('show',array('slug'=> $slug));
+        $entityManager = $this->getDoctrine()->getManager();
+        //0:{Id|Title|Name|Surname|email|PostCode|City|Street}
+        $userArray = $entityManager->getRepository(AppUser::class)
+            ->getByEmail($userEmail);
+
+        //Creates user object from array
+        $user = new AppUser();
+
+        $user->fromArray($userArray[0]);
+
+        $form = $this->createForm(AppUserType::class, $user, array( 'method' => 'PUT' ))
+            ->remove('email');
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted() && $form->isValid()){
+
+            $entityManager->merge($user);
+            $entityManager->flush();
+
+            //TODO: Add success notification after redirecting.
+            return $this->redirectToRoute('show',array('slug'=> $slug));
+
+
+        }
+
+        return $this->render('account/edit.html.twig', array(
+            'form' => $form->createView()
+        ));
+
+
+
     }
 
-    /**@TODO: Document
+    /**
      * @Route("/delete/{slug}", name="delete")
      */
-    public function deleteAction($slug){
+    public function deleteAction(Request $request,$slug){
 
         //TODO: Implement deleting entries (low priority)
         //TODO: Implement confirmation prompt
+
+
+        $userEmail = $this->getUser()->getEmail();
+
+        if($userEmail === $slug) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $userArray = $entityManager->getRepository(AppUser::class)->getByEmail($slug);
+
+            $user = $entityManager->getRepository(AppUser::class)->find($userArray[0]['id']);
+
+            $entityManager->remove($user);
+
+            $entityManager->flush();
+
+            $this->get('security.token_storage')->setToken(null);
+            $this->get('request')->getSession()->invalidate();
+
+        }
 
         return $this->redirectToRoute("homepage");
     }
