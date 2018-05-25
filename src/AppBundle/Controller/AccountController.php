@@ -38,19 +38,36 @@ class AccountController extends Controller
             $password = $this->get('security.password_encoder')
                 ->encodePassword($user, $user->getPlainPassword());
             $user->setPwdhash($password);
+
+            //TODO: Handle file upload using either a service or using a Doctrine listener
+            //Get picture file
+
+            $file = $user->getPictureUrl();
+
+            $filename = $this->genUniqueFilename().'.'.$file->guessExtension();
+
+            $file->move(
+                $this->getParameter('user_pictures_dir'),
+                $filename
+            );
+
+            $user->setPictureUrl($filename);
+
             //Default role
             //TODO: Put this into some sort of config file
             $user->setRoles(array('ROLE_USER'));
 
+            //Set user as active
             $user->setActive(true);
 
+            //Persist to database
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
 
             //TODO: Add success notification after redirecting.
 
-            return $this->redirectToRoute('homepage');
+            return $this->redirectToRoute('login');
 
         }
 
@@ -135,6 +152,10 @@ class AccountController extends Controller
         }
 
         return $this->redirectToRoute("homepage");
+    }
+
+    private function genUniqueFilename(){
+        return md5(uniqid());
     }
 
 }

@@ -69,6 +69,12 @@ class AppUser implements AdvancedUserInterface, EquatableInterface, \Serializabl
      *@ORM\Column(type="string", length=100, unique=true)
      */
     private $email;
+    /**
+     * @ORM\Column(type="string", length=100, unique=true)
+     *
+     * @Assert\File(mimeTypes={"image/*"})
+     */
+    private $pictureUrl;
 
     /**
      * @ORM\Column(type="string", length=80)
@@ -177,6 +183,23 @@ class AppUser implements AdvancedUserInterface, EquatableInterface, \Serializabl
     public function setEmail($email)
     {
         $this->email = $email;
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getPictureUrl()
+    {
+        return $this->pictureUrl;
+    }
+
+    /**
+     * @param mixed $pictureUrl
+     */
+    public function setPictureUrl($pictureUrl)
+    {
+        $this->pictureUrl = $pictureUrl;
     }
 
 

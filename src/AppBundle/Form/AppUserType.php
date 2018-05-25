@@ -11,6 +11,7 @@ namespace AppBundle\Form;
 use AppBundle\Entity\AppUser;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -48,7 +49,9 @@ class AppUserType extends AbstractType
 
 
                 if(!$data || null === $data->getEmail()){
-                    $form->add('plainPassword', RepeatedType::class, array(
+                    $form
+                        ->add('pictureUrl', FileType::class, array('label' => 'Upload a profile picture'))
+                        ->add('plainPassword', RepeatedType::class, array(
                         'type' => PasswordType::class,
                         'first_options'  => array('label' => 'Password'),
                         'second_options' => array('label' => 'Repeat Password'),
