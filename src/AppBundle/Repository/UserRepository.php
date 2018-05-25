@@ -54,6 +54,7 @@ class UserRepository extends EntityRepository
                 'u.postCode',
                 'u.city',
                 'u.street',
+                'u.pictureUrl'
             ))
             ->from('AppBundle:AppUser', 'u');
     }

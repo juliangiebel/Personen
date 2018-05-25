@@ -1,0 +1,87 @@
+//TODO: Add media query's for mobile devices to change the grid layout on them
+//Vars
+$menu-spacing: 8em;
+$header-spacing: 4em;
+$footer-spacing: $header-spacing;
+//Menu:
+$nav-button-spacing: 3em;
+$nav-image-dimensions: 80px;
+
+//Colors:
+$text-primary: black;
+$text-secondary: lighten($text-primary,10%);
+
+//Basic Resets
+li {
+  list-style: none;
+}
+
+a, a:link, a:hover, a:active {
+  color: $text-primary;
+  text-decoration-line: none;
+}
+
+
+//Grids:
+.grid-container {
+  display: grid;
+}
+
+.main.grid-container{
+  //----Grid----
+  grid-template-columns: $menu-spacing auto;
+  grid-template-rows: $header-spacing auto $footer-spacing;
+
+  grid-template-areas:
+          'menu header'
+          'menu content'
+          '. .';
+  //------------
+}
+
+.menu-link-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu {
+  img {
+    display: block;
+    box-sizing: border-box;
+
+    width:  $nav-image-dimensions;
+    height: $nav-image-dimensions;
+
+    margin: 1em;
+    object-fit: cover;
+
+    border-radius: 100%;
+  }
+}
+
+.menu.grid-item {
+  grid-area: menu;
+}
+
+.menu-link {
+  display: block;
+
+  width: #{( $menu-spacing/1.5)};
+  height: 2em;
+
+
+  p {
+    text-align: center;
+    position: relative;
+    transform: translateY(-50%);
+  }
+}
+
+.header.grid-item {
+  grid-area: header;
+}
+
+.content.grid-item {
+  grid-area: content;
+}

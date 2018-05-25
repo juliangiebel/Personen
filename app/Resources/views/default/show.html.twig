@@ -1,2 +1,19 @@
 {% extends 'base.html.twig' %}
 
+{% block body %}
+
+    <img src="{{ asset('uploads/UserPictures/' ~ user.pictureUrl) }}" alt="">
+    
+    <table>
+    {% for key, field in fields %}
+        <tr>
+            <td>{{ field }}</td>
+            {% if user[key].timestamp is defined %}
+                <td>{{ user[key]|date('d/m/Y') }}</td>
+            {% else %}
+                <td>{{ user[key] }}</td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </table>
+{% endblock %}
